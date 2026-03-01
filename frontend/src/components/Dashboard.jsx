@@ -681,74 +681,158 @@ export default function Dashboard({ orbits, risks, onManeuver, onAutoSolve, onCo
                                     </div>
                                 </div>
                             </div>
-
+                        </div>
                     </div>
                 )}
 
                 {/* Mission Media Tab */}
-                {activeNav === 'media' && (
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div>
-                            <div className="section-eyebrow"> Data Credibility & Previews</div>
-                            <p className="center-content-title">Mission Media Center</p>
-                            <p className="center-content-sub">
-                                Review system capabilities, demonstration videos, and conceptual renderings. All data visualized in demos relies on simulated orbital parameters unless explicitly stated otherwise.
-                            </p>
+                {activeNav === 'media' && (() => {
+                    // All video IDs from channels confirmed to allow embedding
+                    const MEDIA_VIDEOS = [
+                        {
+                            id: 'jf7UTxBKpb0',
+                            title: 'Earth from the ISS — 4K Timelapse',
+                            source: 'Riccardo Rossi / NASA',
+                            tag: 'EARTH VIEW',
+                            tagColor: '#22cc55',
+                            thumb: 'https://img.youtube.com/vi/jf7UTxBKpb0/maxresdefault.jpg',
+                            desc: '4K timelapse of Earth captured from the ISS. Auroras, storms, city lights, and oceans at orbital altitude.',
+                        },
+                        {
+                            id: 'ivFDzFwHBHw',
+                            title: 'Everyday Astronaut — Starship IFT-4 Launch',
+                            source: 'Everyday Astronaut',
+                            tag: 'LAUNCH',
+                            tagColor: '#5b9bd5',
+                            thumb: 'https://img.youtube.com/vi/ivFDzFwHBHw/maxresdefault.jpg',
+                            desc: 'Full coverage of SpaceX Starship IFT-4. The most powerful rocket ever built — live coverage and analysis.',
+                        },
+                        {
+                            id: '3mnSDifDSxQ',
+                            title: 'Space Debris — A Growing Problem',
+                            source: 'ESA',
+                            tag: 'EDUCATION',
+                            tagColor: '#c8a84b',
+                            thumb: 'https://img.youtube.com/vi/3mnSDifDSxQ/maxresdefault.jpg',
+                            desc: 'ESA explains the orbital debris problem: tracking, risks, and mitigation strategies used worldwide.',
+                        },
+                        {
+                            id: '4P8fKd0IVOs',
+                            title: 'James Webb — First Deep Field Images',
+                            source: 'Scott Manley',
+                            tag: 'DISCOVERY',
+                            tagColor: '#9b59b6',
+                            thumb: 'https://img.youtube.com/vi/4P8fKd0IVOs/maxresdefault.jpg',
+                            desc: 'JWST reveals the deepest infrared image of the universe. Thousands of galaxies spanning billions of light-years.',
+                        },
+                        {
+                            id: 'BM3MJgCbBQ0',
+                            title: 'How Satellites Actually Work',
+                            source: 'Kurzgesagt',
+                            tag: 'SCIENCE',
+                            tagColor: '#22cc55',
+                            thumb: 'https://img.youtube.com/vi/BM3MJgCbBQ0/maxresdefault.jpg',
+                            desc: 'Kurzgesagt explains satellite orbits, communication, GPS, spy satellites, and how they all coexist.',
+                        },
+                        {
+                            id: 'sMjFaOL0U64',
+                            title: 'SpaceX — Making Life Multiplanetary',
+                            source: 'SpaceX',
+                            tag: 'MISSION',
+                            tagColor: '#5b9bd5',
+                            thumb: 'https://img.youtube.com/vi/sMjFaOL0U64/maxresdefault.jpg',
+                            desc: "Elon Musk's full presentation on SpaceX's Starship and the vision for a multiplanetary civilization.",
+                        },
+                        {
+                            id: 'EAriRetVB1s',
+                            title: "What Happens When You're Hit By Space Debris",
+                            source: 'Kurzgesagt',
+                            tag: 'KESSLER',
+                            tagColor: '#e74c3c',
+                            thumb: 'https://img.youtube.com/vi/EAriRetVB1s/maxresdefault.jpg',
+                            desc: 'What happens when a debris fragment hits a spacecraft at 28,000 km/h? Kinetic energy, cascade risk, and Kessler Syndrome.',
+                        },
+                        {
+                            id: 'N7gwJBhFCeE',
+                            title: 'Apollo 11 — The Moon Landing in Real Time',
+                            source: 'NASA / Archive',
+                            tag: 'HISTORICAL',
+                            tagColor: '#f39c12',
+                            thumb: 'https://img.youtube.com/vi/N7gwJBhFCeE/maxresdefault.jpg',
+                            desc: 'The original moonlanding mission broadcast. A historical milestone that shaped the entire future of space exploration.',
+                        },
+                    ];
+
+                    return (
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '0 0 24px' }}>
+                            {/* Header */}
+                            <div style={{ marginBottom: 20 }}>
+                                <div style={{ fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--blue)', marginBottom: 6 }}>▷ CURATED SPACE FOOTAGE</div>
+                                <div style={{ fontSize: 22, fontFamily: 'var(--font-display)', color: 'var(--white)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Mission Media Center</div>
+                                <div style={{ fontSize: 12, color: 'var(--grey-500)', maxWidth: 560 }}>
+                                    Curated space footage from NASA, ESA, SpaceX and science channels. Click any video to play inline.
+                                </div>
+                            </div>
+
+                            {/* Featured video — full width */}
+                            <div style={{ marginBottom: 20, border: '1px solid var(--blue)', borderRadius: 4, overflow: 'hidden', background: '#000' }}>
+                                <div style={{ position: 'relative', width: '100%', paddingTop: '42%' }}>
+                                    <iframe
+                                        src={`https://www.youtube-nocookie.com/embed/${MEDIA_VIDEOS[0].id}?rel=0&modestbranding=1&color=white`}
+                                        title={MEDIA_VIDEOS[0].title}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                                    />
+                                </div>
+                                <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-dim)' }}>
+                                    <div>
+                                        <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 3 }}>{MEDIA_VIDEOS[0].title}</div>
+                                        <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>{MEDIA_VIDEOS[0].desc}</div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16 }}>
+                                        <span style={{ fontSize: 9, padding: '3px 8px', borderRadius: 2, background: 'rgba(34,204,85,0.15)', color: '#22cc55', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: 1 }}>{MEDIA_VIDEOS[0].tag}</span>
+                                        <span style={{ fontSize: 9, padding: '3px 8px', borderRadius: 2, background: 'rgba(255,255,255,0.06)', color: 'var(--grey-400)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: 1 }}>{MEDIA_VIDEOS[0].source}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Grid of remaining videos */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                                {MEDIA_VIDEOS.slice(1).map((v) => (
+                                    <div key={v.id} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000' }}>
+                                            <iframe
+                                                src={`https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&color=white`}
+                                                title={v.title}
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowFullScreen
+                                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                                            />
+                                        </div>
+                                        <div style={{ padding: '10px 12px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                            <div>
+                                                <div style={{ fontSize: 12, fontWeight: 'bold', color: 'var(--white)', marginBottom: 4, lineHeight: 1.3 }}>{v.title}</div>
+                                                <div style={{ fontSize: 10, color: 'var(--grey-500)', lineHeight: 1.5 }}>{v.desc}</div>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                                                <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 2, background: `${v.tagColor}18`, color: v.tagColor, fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: 1 }}>{v.tag}</span>
+                                                <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 2, background: 'rgba(255,255,255,0.05)', color: 'var(--grey-500)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: 1 }}>{v.source}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div style={{ marginTop: 20, padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-dim)', borderRadius: 4, fontSize: 10, color: 'var(--grey-600)', fontStyle: 'italic', textAlign: 'center' }}>
+                                All videos are property of their respective owners. Embedded via YouTube for educational purposes.
+                            </div>
                         </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, padding: '24px 0' }}>
-                            {/* System Demo Video */}
-                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
-                                <div style={{ background: '#000', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--border-dim)', position: 'relative' }}>
-                                    <span style={{ fontSize: 40, opacity: 0.5 }}>▶</span>
-                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--blue)' }}>SYSTEM DEMO</div>
-                                </div>
-                                <div style={{ padding: 16 }}>
-                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Full System Overview Demo</div>
-                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Platform tour highlighting Satellite Guardian, Long-term Forecasting, and Maneuver Simulation.</div>
-                                </div>
-                            </div>
-                            
-                            {/* Cascade Sim Clip */}
-                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
-                                <div style={{ background: '#110505', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--red)', position: 'relative' }}>
-                                    <span style={{ fontSize: 40, opacity: 0.5, color: 'var(--red)' }}>▶</span>
-                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(231, 76, 60, 0.2)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--red)' }}>SIMULATION CLIP</div>
-                                </div>
-                                <div style={{ padding: 16 }}>
-                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Kessler Syndrome (Cascade) Rendering</div>
-                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Visualization of a non-recoverable multi-collision cascade scenario in LEO.</div>
-                                </div>
-                            </div>
-                            
-                            {/* Planet Zoom Clip */}
-                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
-                                <div style={{ background: '#0a101a', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--border-dim)', position: 'relative' }}>
-                                    <img src="/textures/moon.jpg" alt="Moon texture" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} />
-                                    <span style={{ fontSize: 40, opacity: 0.8, color: 'white', position: 'absolute' }}>▶</span>
-                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--gold)' }}>FEATURE HIGHLIGHT</div>
-                                </div>
-                                <div style={{ padding: 16 }}>
-                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Solar System: Interplanetary Navigation</div>
-                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Smooth dynamic UI transitioning from local Earth orbit to standard Solar System views with planetary focus.</div>
-                                </div>
-                            </div>
-                            
-                            {/* Information Block */}
-                            <div style={{ background: 'var(--bg-surface)', border: '1px dashed var(--border-dim)', borderRadius: 4, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                <div style={{ color: 'var(--blue)', marginBottom: 12 }}>ℹ️ Data Credibility Rule</div>
-                                <div style={{ fontSize: 12, color: 'var(--grey-300)', lineHeight: 1.6, marginBottom: 16 }}>
-                                    DebrisX strives to maintain elite operational credibility in system visualization. To avoid presenting speculative metrics as fact, all media models, risk profiles, and precise predictive probabilities are strictly labeled as <strong>Prototype Simulation Data</strong> unless otherwise backed by live API integrations (e.g. NOAA SWPC integration).
-                                </div>
-                                <div style={{ fontSize: 10, color: 'var(--grey-500)', fontStyle: 'italic', borderTop: '1px solid var(--border-dim)', paddingTop: 16 }}>
-                                    Images provided via royalty-free space photography resources and proprietary procedural rendering. Please do not re-upload or treat predictive scenarios as official orbital safety documentation.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                    );
+                })()}
 
                 {/* Space Copilot full page */}
+
                 {activeNav === 'copilot' && (
                     <div className="center-content">
                         <div>

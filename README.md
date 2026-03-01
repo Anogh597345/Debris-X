@@ -5,7 +5,7 @@ DebrisX is an AI-powered orbital intelligence platform that transforms Earth’s
 
 It combines satellite collision risk modeling, long-term orbital sustainability forecasting, Near-Earth Object (NEO) monitoring, and planetary system simulation within a mission-control-style interface.
 
-This project was built as part of the AMD Slingshot Hackathon.
+This project was built as part of the AMD Slingshot Hackathon. **(Final Implementation)**
 
 ---
 
@@ -17,7 +17,7 @@ DebrisX addresses this challenge by providing:
 
 - Real-time satellite risk monitoring  
 - AI-based collision probability modeling  
-- Autonomous maneuver simulation  
+- Autonomous maneuver simulation with AI Auto Solve  
 - Long-term congestion forecasting  
 - Orbital Stability Index (OSI) metric  
 - Planet-specific NEO threat monitoring  
@@ -31,10 +31,10 @@ It is a predictive orbital intelligence system.
 ## Core Features
 
 ### 1. Earth Orbit Intelligence
-- Satellite tracking (simulated large-scale dataset)
+- Satellite tracking with per-satellite Keplerian orbital mechanics
 - Collision probability calculation
 - Risk explanation engine
-- Autonomous maneuver simulation
+- Autonomous maneuver simulation (AI Auto Solve)
 - Cascade event simulation
 - Orbital Sustainability Index (OSI)
 
@@ -85,11 +85,12 @@ Pure orbital intelligence.
 
 ## Technology Stack
 
-- 3D Visualization: WebGL / Three.js
-- Simulation Engine: Custom orbital logic
-- Risk Modeling: AI-inspired probabilistic calculations
-- UI Framework: React / Modern Web Stack
-- Performance Optimization: GPU-accelerated rendering support
+- **3D Visualization**: WebGL / Three.js
+- **Simulation Engine**: Custom orbital logic with Keplerian mechanics
+- **Risk Modeling**: AI-inspired probabilistic calculations
+- **Backend API**: Python, FastAPI
+- **UI Framework**: React / Modern Web Stack (Vite, Zustand)
+- **Performance Optimization**: GPU-accelerated rendering support
 
 ---
 
@@ -132,33 +133,57 @@ DebrisX bridges this gap by combining:
 
 ## Repository Structure
 
-/ src  
-/ public  
-/ assets  
-/ simulation  
-/ components  
-README.md  
-LICENSE  
+```text
+/ backend
+  / api          # FastAPI routes
+  / core         # Core business logic
+  / data         # Datasets & generation
+  / ml           # Machine learning & simulation logic
+  run.py         # Entry point for backend
+/ frontend
+  / public       # Static assets
+  / src          # React components & app logic
+README.md
+LICENSE
+```
 
 ---
 
 ## Installation
 
-Clone the repository:
+### Prerequisites
+- Node.js (v18+)
+- Python 3.9+
+
+### Backend Setup
+Clone the repository and set up the Python backend:
 
 ```bash
 git clone https://github.com/your-username/debrisx.git
+cd debrisx/backend
+
+# Create and activate virtual environment
+python -m venv venv
+# On Windows: venv\Scripts\activate
+# On Linux/Mac: source venv/bin/activate
+
+# Install dependencies
+pip install fastapi uvicorn pydantic # Add any other required packages
+
+# Run the backend server
+python run.py
 ```
 
-Install dependencies:
+### Frontend Setup
+In a new terminal, navigate to the frontend directory:
 
 ```bash
+cd debrisx/frontend
+
+# Install dependencies
 npm install
-```
 
-Run development server:
-
-```bash
+# Run development server
 npm run dev
 ```
 
@@ -174,7 +199,7 @@ It does not provide official orbital safety advisories or real-world operational
 ## Authors
 
 Team DebrisX  
-AMD Slingshot Hackathon Submission
+AMD Slingshot Hackathon Submission (Final Version)
 
 ---
 

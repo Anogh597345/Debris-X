@@ -512,3 +512,129 @@ export function DebrisCloud({ cascadeData }) {
         </points>
     );
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SATELLITE SWARM — 12,149 individually orbiting satellites
+   Each satellite has unique: altitude, inclination, RAAN, speed
+   ════════════════════════════════════════════════════════════════ */
+export function SatelliteSwarm({ timeMultiplier = 1 }) {
+    const posAttrRef = useRef();
+    const timeRef    = useRef(0);
+
+    const SHELLS = [
+        { name: 'LEO',    altMin: 200,   altMax: 2000,  count: 8800,  color: '#00e5ff', baseSpeed: 4.0  },
+        { name: 'MEO',    altMin: 2000,  altMax: 20000, count: 1400,  color: '#7c4dff', baseSpeed: 1.2  },
+        { name: 'GEO',    altMin: 35786, altMax: 36100, count: 500,   color: '#ffd740', baseSpeed: 0.07 },
+        { name: 'HEO',    altMin: 1000,  altMax: 39000, count: 449,   color: '#ff6e40', baseSpeed: 0.5  },
+        { name: 'DEBRIS', altMin: 300,   altMax: 1500,  count: 1000,  color: '#ff1744', baseSpeed: 3.8  },
+    ];
+    const TOTAL = SHELLS.reduce((s, sh) => s + sh.count, 0);
+
+    // ── Precompute orbital elements once ──────────────────────────
+    // Store as flat Float32Arrays for fast access inside useFrame
+    // Per satellite: [r, a0, speed, ux, uy, uz, vx, vy, vz]  (9 values)
+    const { orb, colors, positions } = useMemo(() => {
+        const orb       = new Float32Array(TOTAL * 9);
+        const colors    = new Float32Array(TOTAL * 3);
+        const positions = new Float32Array(TOTAL * 3);
+
+        let idx = 0;
+        SHELLS.forEach(shell => {
+            const col = new THREE.Color(shell.color);
+            for (let i = 0; i < shell.count; i++) {
+                const altKm = shell.altMin + Math.random() * (shell.altMax - shell.altMin);
+                const r     = (6371 + altKm) * SCALE;
+
+                // Keplerian speed: ω ∝ r^(-3/2), normalized to LEO baseline
+                const rLEO  = (6371 + 400) * SCALE;
+                const speed = shell.baseSpeed * Math.pow(rLEO / r, 1.5);
+
+                const a0   = Math.random() * Math.PI * 2;
+
+                // Orbital plane angles
+                const inc  = shell.name === 'GEO'
+                    ? (Math.random() - 0.5) * 0.1          // near-equatorial
+                    : shell.name === 'DEBRIS'
+                        ? Math.random() * Math.PI           // chaotic inclinations
+                        : (0.1 + Math.random() * 0.95) * Math.PI; // 10°–170°
+                const RAAN = Math.random() * Math.PI * 2;
+
+                // Orbital basis vectors:
+                // u = direction of ascending node
+                // v = perpendicular in orbital plane (above equator at ascending node)
+                const cosR = Math.cos(RAAN), sinR = Math.sin(RAAN);
+                const cosI = Math.cos(inc),  sinI = Math.sin(inc);
+
+                // u = (cos Ω, 0, sin Ω)
+                const ux =  cosR,  uy = 0,    uz = sinR;
+                // v = (-sin Ω cos i, sin i, cos Ω cos i)
+                const vx = -sinR * cosI, vy = sinI, vz = cosR * cosI;
+
+                const base = idx * 9;
+                orb[base]   = r;
+                orb[base+1] = a0;
+                orb[base+2] = speed;
+                orb[base+3] = ux;  orb[base+4] = uy;  orb[base+5] = uz;
+                orb[base+6] = vx;  orb[base+7] = vy;  orb[base+8] = vz;
+
+                colors[idx * 3]     = col.r;
+                colors[idx * 3 + 1] = col.g;
+                colors[idx * 3 + 2] = col.b;
+                idx++;
+            }
+        });
+        return { orb, colors, positions };
+    }, []);
+
+    // ── Update every frame ─────────────────────────────────────────
+    useFrame((_, delta) => {
+        timeRef.current += delta * 0.25 * timeMultiplier; // scales with sim speed
+        const t = timeRef.current;
+
+        for (let i = 0; i < TOTAL; i++) {
+            const base  = i * 9;
+            const r     = orb[base];
+            const theta = orb[base+1] + t * orb[base+2];
+            const cosT  = Math.cos(theta);
+            const sinT  = Math.sin(theta);
+
+            // p = r * (cosθ · u + sinθ · v)
+            positions[i * 3]     = r * (cosT * orb[base+3] + sinT * orb[base+6]);
+            positions[i * 3 + 1] = r * (cosT * orb[base+4] + sinT * orb[base+7]);
+            positions[i * 3 + 2] = r * (cosT * orb[base+5] + sinT * orb[base+8]);
+        }
+
+        if (posAttrRef.current) posAttrRef.current.needsUpdate = true;
+    });
+
+    return (
+        <points>
+            <bufferGeometry>
+                <bufferAttribute
+                    ref={posAttrRef}
+                    attach="attributes-position"
+                    count={TOTAL}
+                    array={positions}
+                    itemSize={3}
+                />
+                <bufferAttribute
+                    attach="attributes-color"
+                    count={TOTAL}
+                    array={colors}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial
+                vertexColors
+                size={0.055}
+                transparent
+                opacity={0.92}
+                sizeAttenuation
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+            />
+        </points>
+    );
+}
+
+

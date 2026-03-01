@@ -1,7 +1,7 @@
 import { Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
-import { Earth, OrbitTrajectory, SolarSystemScene, DebrisCloud } from './DigitalTwin';
+import { Earth, OrbitTrajectory, SolarSystemScene, DebrisCloud, SatelliteSwarm } from './DigitalTwin';
 import ErrorBoundary from './ErrorBoundary';
 
 /* Orbital debris view — Earth close-up */
@@ -31,6 +31,24 @@ export const VizCanvas = ({ orbits, riskEvents, mode = 'orbital', showNeo = fals
 
     return (
         <div style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+            {/* Shell legend */}
+            {!cascadeActive && (
+                <div style={{ position: 'absolute', bottom: 12, left: 12, zIndex: 10, display: 'flex', flexDirection: 'column', gap: 4, pointerEvents: 'none' }}>
+                    {[
+                        { color: '#00e5ff', label: 'LEO · 8,800 objects' },
+                        { color: '#7c4dff', label: 'MEO · 1,400 objects' },
+                        { color: '#ffd740', label: 'GEO · 500 objects' },
+                        { color: '#ff6e40', label: 'HEO · 449 objects' },
+                        { color: '#ff1744', label: 'Debris · 1,000 objects' },
+                    ].map(s => (
+                        <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: '50%', background: s.color, flexShrink: 0, boxShadow: `0 0 6px ${s.color}` }} />
+                            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', fontFamily: 'monospace', letterSpacing: 1 }}>{s.label}</span>
+                        </div>
+                    ))}
+                    <div style={{ marginTop: 4, fontSize: 8, color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace', letterSpacing: 1 }}>SIMULATED DATASET · 12,149 OBJECTS</div>
+                </div>
+            )}
             <ErrorBoundary>
                 <Canvas camera={{ position: [0, 8, 22], fov: 50 }}>
                     <ambientLight intensity={0.5} />
@@ -39,6 +57,8 @@ export const VizCanvas = ({ orbits, riskEvents, mode = 'orbital', showNeo = fals
 
                     <Suspense fallback={null}>
                         <Earth />
+                        {/* 12,149 satellite swarm — always visible */}
+                        {!cascadeActive && <SatelliteSwarm timeMultiplier={timeMultiplier} />}
                         {Object.entries(orbits).map(([satId, trajectory]) => (
                             <OrbitTrajectory key={satId} trajectory={trajectory} riskEvent={riskMap[satId]} />
                         ))}

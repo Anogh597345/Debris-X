@@ -16,9 +16,9 @@ const NAV_ITEMS = [
     { icon: '◈', label: 'Cascade Sim', key: 'cascade', badge: 'NEW', badgeColor: 'red' },
     { icon: '▦', label: 'Congestion Map', key: 'heatmap', badge: 'LIVE', badgeColor: 'gold' },
     { icon: '◫', label: 'Solar System', key: 'solar', badge: '3D', badgeColor: 'gold' },
-    { icon: '☄', label: 'NEO Prediction', key: 'neo', badge: 'ALERT', badgeColor: 'red' },
     { icon: '◎', label: 'Space Copilot', key: 'copilot', badge: 'AI', badgeColor: 'gold' },
     { icon: '◬', label: 'Sustainability', key: 'sustain' },
+    { icon: '▶', label: 'Mission Media', key: 'media' },
 ];
 
 const GLOBE_TABS = new Set(['guardian', 'risk', 'maneuver', 'cascade']);
@@ -52,17 +52,17 @@ const PLANETS = {
         temperatureData: [{ year: 2020, temp: -110 }, { year: 2022, temp: -110 }, { year: 2024, temp: -110 }, { year: 2026, temp: -110 }]
     },
     saturn: {
-        name: 'Saturn', radius: '58,232 km', gravity: '10.44 m/s²', temp: '-140°C', period: '29 years', moons: 146, type: 'Gas Giant', orbitScale: 80,
+        name: 'Saturn', radius: '58,232 km', gravity: '10.44 m/s²', temp: '-140°C', period: '29 years', moons: 274, type: 'Gas Giant', orbitScale: 80,
         satellites: { active: 0, debris: 3 },
         temperatureData: [{ year: 2020, temp: -140 }, { year: 2022, temp: -140 }, { year: 2024, temp: -140 }, { year: 2026, temp: -140 }]
     },
     uranus: {
-        name: 'Uranus', radius: '25,362 km', gravity: '8.69 m/s²', temp: '-195°C', period: '84 years', moons: 27, type: 'Ice Giant', orbitScale: 100,
+        name: 'Uranus', radius: '25,362 km', gravity: '8.69 m/s²', temp: '-195°C', period: '84 years', moons: 29, type: 'Ice Giant', orbitScale: 100,
         satellites: { active: 0, debris: 1 },
         temperatureData: [{ year: 2020, temp: -195 }, { year: 2022, temp: -195 }, { year: 2024, temp: -195 }, { year: 2026, temp: -195 }]
     },
     neptune: {
-        name: 'Neptune', radius: '24,622 km', gravity: '11.15 m/s²', temp: '-200°C', period: '165 years', moons: 14, type: 'Ice Giant', orbitScale: 120,
+        name: 'Neptune', radius: '24,622 km', gravity: '11.15 m/s²', temp: '-200°C', period: '165 years', moons: 16, type: 'Ice Giant', orbitScale: 120,
         satellites: { active: 0, debris: 1 },
         temperatureData: [{ year: 2020, temp: -200 }, { year: 2022, temp: -200 }, { year: 2024, temp: -200 }, { year: 2026, temp: -200 }]
     }
@@ -504,7 +504,7 @@ export default function Dashboard({ orbits, risks, onManeuver, onAutoSolve, onCo
                             <div className="section-eyebrow"> Long-Term Forecaster</div>
                             <p className="center-content-title">Orbital Stability Projection Engine</p>
                             <p className="center-content-sub">
-                                Model how accelerated launch rates impact debris density, cascade thresholds, and the global Orbital Stability Index (OSI).
+                                Model how accelerated launch rates impact debris density, cascade thresholds, and the global Orbital Stability Index (OSI). All baseline data is simulated.
                             </p>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, alignItems: 'start' }}>
@@ -596,6 +596,152 @@ export default function Dashboard({ orbits, risks, onManeuver, onAutoSolve, onCo
                                             </span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Global Launch Timeline & Upcoming Schedules */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 24, marginTop: 24, marginBottom: 24 }}>
+                            {/* History Timeline */}
+                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, padding: 24 }}>
+                                <div style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--grey-300)', letterSpacing: 1, marginBottom: 4 }}>Global Launch Timeline</div>
+                                <div style={{ fontSize: 10, color: 'var(--grey-500)', fontStyle: 'italic', marginBottom: 16 }}>Historical data visualization (Simulated prototype context)</div>
+                                <div style={{ width: '100%', height: 180 }}>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={[
+                                            { year: 1990, launches: 116 }, { year: 1995, launches: 83 }, { year: 1998, launches: 82, milestone: 'ISS Assembly Begins' },
+                                            { year: 2000, launches: 85 }, { year: 2005, launches: 55 }, { year: 2010, launches: 74 },
+                                            { year: 2015, launches: 86 }, { year: 2018, launches: 114 }, { year: 2019, launches: 102, milestone: 'Starlink Constellation Expansion' },
+                                            { year: 2020, launches: 114 }, { year: 2021, launches: 145 }, { year: 2022, launches: 186 },
+                                            { year: 2023, launches: 223, milestone: 'Record Commercial Launch Year' }, { year: 2024, launches: 250 }, { year: 2025, launches: 280 }
+                                        ]}>
+                                            <XAxis dataKey="year" stroke="var(--grey-500)" fontSize={10} tickMargin={8} />
+                                            <YAxis stroke="var(--grey-500)" fontSize={10} width={30} />
+                                            <Tooltip
+                                                contentStyle={{ background: 'rgba(0,0,0,0.8)', border: '1px solid var(--border-dim)', borderRadius: 4, fontSize: 11 }}
+                                                labelStyle={{ color: 'var(--grey-300)', marginBottom: 4 }}
+                                                formatter={(val, name, props) => {
+                                                    const extra = props.payload.milestone ? `\\n[${props.payload.milestone}]` : '';
+                                                    return [`${val} Launches${extra}`, 'Payloads Inserted'];
+                                                }}
+                                            />
+                                            <Area type="step" dataKey="launches" stroke="var(--blue)" fill="rgba(91, 155, 213, 0.2)" strokeWidth={2} />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+                                    <div style={{ background: 'var(--bg-deep)', padding: '6px 12px', borderRadius: 3, borderLeft: '2px solid var(--blue)', fontSize: 10, flex: 1 }}>
+                                        <div style={{ fontWeight: 'bold', color: 'var(--white)', marginBottom: 2 }}>1998</div>
+                                        <div style={{ color: 'var(--grey-300)' }}>ISS Assembly Begins</div>
+                                    </div>
+                                    <div style={{ background: 'var(--bg-deep)', padding: '6px 12px', borderRadius: 3, borderLeft: '2px solid var(--blue)', fontSize: 10, flex: 1 }}>
+                                        <div style={{ fontWeight: 'bold', color: 'var(--white)', marginBottom: 2 }}>2019</div>
+                                        <div style={{ color: 'var(--grey-300)' }}>Starlink Constellation Expansion</div>
+                                    </div>
+                                    <div style={{ background: 'var(--bg-deep)', padding: '6px 12px', borderRadius: 3, borderLeft: '2px solid var(--blue)', fontSize: 10, flex: 1 }}>
+                                        <div style={{ fontWeight: 'bold', color: 'var(--white)', marginBottom: 2 }}>2023</div>
+                                        <div style={{ color: 'var(--grey-300)' }}>Record Commercial Launch Year</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Upcoming Launches */}
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-dim)' }}>
+                                        <div style={{ fontSize: 11, textTransform: 'uppercase', color: 'var(--blue)', fontWeight: 'bold', letterSpacing: 1 }}>Upcoming Launch Schedule</div>
+                                    </div>
+                                    <div style={{ padding: '0 20px', flex: 1 }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 11 }}>
+                                            <thead>
+                                                <tr style={{ color: 'var(--grey-500)', textTransform: 'uppercase', letterSpacing: 1, borderBottom: '1px solid var(--border-dim)' }}>
+                                                    <th style={{ padding: '12px 0', fontWeight: 'normal' }}>Provider</th>
+                                                    <th style={{ padding: '12px 0', fontWeight: 'normal' }}>Mission</th>
+                                                    <th style={{ padding: '12px 0', fontWeight: 'normal' }}>Target Window</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {[
+                                                    { provider: 'SpaceX', mission: 'Starlink Group 8', time: 'NET Q2 2026', status: 'Scheduled', color: '#22cc55' },
+                                                    { provider: 'NASA', mission: 'Artemis II', time: 'Sep 2026', status: 'Scheduled', color: '#22cc55' },
+                                                    { provider: 'ISRO', mission: 'Gaganyaan Test', time: 'Planned', status: 'Planned', color: '#f39c12' },
+                                                    { provider: 'ESA', mission: 'Arianne 6 Demo', time: 'TBD', status: 'Delayed', color: '#e74c3c' }
+                                                ].map((L, i) => (
+                                                    <tr key={i} style={{ borderBottom: '1px solid var(--border-dim)' }}>
+                                                        <td style={{ padding: '12px 0', color: 'var(--white)', fontWeight: 'bold' }}>{L.provider}</td>
+                                                        <td style={{ padding: '12px 0', color: 'var(--grey-300)' }}>{L.mission}</td>
+                                                        <td style={{ padding: '12px 0', fontFamily: 'monospace', color: L.color }}>{L.time}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style={{ padding: 12, background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--border-dim)', fontSize: 9, color: 'var(--grey-500)', fontStyle: 'italic', textAlign: 'center' }}>
+                                        Launch schedule subject to change. Data aggregated for simulation purposes.
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+                )}
+
+                {/* Mission Media Tab */}
+                {activeNav === 'media' && (
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div>
+                            <div className="section-eyebrow"> Data Credibility & Previews</div>
+                            <p className="center-content-title">Mission Media Center</p>
+                            <p className="center-content-sub">
+                                Review system capabilities, demonstration videos, and conceptual renderings. All data visualized in demos relies on simulated orbital parameters unless explicitly stated otherwise.
+                            </p>
+                        </div>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, padding: '24px 0' }}>
+                            {/* System Demo Video */}
+                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
+                                <div style={{ background: '#000', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--border-dim)', position: 'relative' }}>
+                                    <span style={{ fontSize: 40, opacity: 0.5 }}>▶</span>
+                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--blue)' }}>SYSTEM DEMO</div>
+                                </div>
+                                <div style={{ padding: 16 }}>
+                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Full System Overview Demo</div>
+                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Platform tour highlighting Satellite Guardian, Long-term Forecasting, and Maneuver Simulation.</div>
+                                </div>
+                            </div>
+                            
+                            {/* Cascade Sim Clip */}
+                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
+                                <div style={{ background: '#110505', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--red)', position: 'relative' }}>
+                                    <span style={{ fontSize: 40, opacity: 0.5, color: 'var(--red)' }}>▶</span>
+                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(231, 76, 60, 0.2)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--red)' }}>SIMULATION CLIP</div>
+                                </div>
+                                <div style={{ padding: 16 }}>
+                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Kessler Syndrome (Cascade) Rendering</div>
+                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Visualization of a non-recoverable multi-collision cascade scenario in LEO.</div>
+                                </div>
+                            </div>
+                            
+                            {/* Planet Zoom Clip */}
+                            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-dim)', borderRadius: 4, overflow: 'hidden' }}>
+                                <div style={{ background: '#0a101a', width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--border-dim)', position: 'relative' }}>
+                                    <img src="/textures/moon.jpg" alt="Moon texture" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} />
+                                    <span style={{ fontSize: 40, opacity: 0.8, color: 'white', position: 'absolute' }}>▶</span>
+                                    <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: 3, fontSize: 10, fontFamily: 'monospace', color: 'var(--gold)' }}>FEATURE HIGHLIGHT</div>
+                                </div>
+                                <div style={{ padding: 16 }}>
+                                    <div style={{ fontSize: 14, fontWeight: 'bold', color: 'white', marginBottom: 4 }}>Solar System: Interplanetary Navigation</div>
+                                    <div style={{ fontSize: 11, color: 'var(--grey-400)' }}>Smooth dynamic UI transitioning from local Earth orbit to standard Solar System views with planetary focus.</div>
+                                </div>
+                            </div>
+                            
+                            {/* Information Block */}
+                            <div style={{ background: 'var(--bg-surface)', border: '1px dashed var(--border-dim)', borderRadius: 4, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <div style={{ color: 'var(--blue)', marginBottom: 12 }}>ℹ️ Data Credibility Rule</div>
+                                <div style={{ fontSize: 12, color: 'var(--grey-300)', lineHeight: 1.6, marginBottom: 16 }}>
+                                    DebrisX strives to maintain elite operational credibility in system visualization. To avoid presenting speculative metrics as fact, all media models, risk profiles, and precise predictive probabilities are strictly labeled as <strong>Prototype Simulation Data</strong> unless otherwise backed by live API integrations (e.g. NOAA SWPC integration).
+                                </div>
+                                <div style={{ fontSize: 10, color: 'var(--grey-500)', fontStyle: 'italic', borderTop: '1px solid var(--border-dim)', paddingTop: 16 }}>
+                                    Images provided via royalty-free space photography resources and proprietary procedural rendering. Please do not re-upload or treat predictive scenarios as official orbital safety documentation.
                                 </div>
                             </div>
                         </div>
@@ -768,6 +914,7 @@ export default function Dashboard({ orbits, risks, onManeuver, onAutoSolve, onCo
                 {activeNav === 'guardian' && (
                     <div className="panel-card">
                         <div className="panel-card-title">Personal Satellite Guardian</div>
+                        <div style={{ fontSize: 10, color: 'var(--grey-400)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Target Selection <span style={{ fontStyle: 'italic', color: 'var(--grey-500)', textTransform: 'none' }}>(Prototype Simulation Data)</span></div>
                         <select
                             style={{ width: '100%', background: 'var(--bg-deep)', color: 'white', padding: 8, border: '1px solid var(--border-dim)', borderRadius: 4, marginBottom: 12 }}
                             value={selectedSatId}
@@ -801,7 +948,8 @@ export default function Dashboard({ orbits, risks, onManeuver, onAutoSolve, onCo
                 {(!SOLAR_TABS.has(activeNav) && activeNav !== 'guardian') && (
                     <div className="panel-card">
                         <div className="panel-card-title">Live System Metrics</div>
-                        <div className="metric-row"><span className="metric-label">Tracked Objects</span><span className="metric-value accent">{Object.keys(orbits).length}</span></div>
+                        <div className="metric-row"><span className="metric-label">Active Tracked Objects</span><span className="metric-value accent">{Object.keys(orbits).length.toLocaleString()}</span></div>
+                        <div style={{ fontSize: 9, color: 'var(--grey-500)', textTransform: 'uppercase', fontStyle: 'italic', marginBottom: 12, marginTop: -6 }}>(Simulated Dataset for Prototype)</div>
                         <div className="metric-row"><span className="metric-label">Active Risk Events</span><span className={`metric-value${risks.length ? ' danger' : ' good'}`}>{risks.length}</span></div>
                         {topRisk && <>
                             <div className="metric-row"><span className="metric-label">Min Separation</span><span className="metric-value danger">{topRisk.min_distance_km.toFixed(2)} km</span></div>
